@@ -1,0 +1,415 @@
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dipti Rani - Portfolio</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700&family=Playfair+Display:wght@700&display=swap" rel="stylesheet">
+    <style>
+        /* Custom Styles */
+        
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #111827;
+            /* Dark Blue-Gray Background */
+            color: #d1d5db;
+            /* Light Gray Text */
+            overflow-x: hidden;
+            /* Prevents horizontal scrolling on the page */
+        }
+        
+        h1,
+        h2,
+        h3 {
+            font-family: 'Playfair Display', serif;
+            color: #ffffff;
+        }
+        /* --- Home Section: Zoomable Background --- */
+        
+        .zoom-bg {
+            animation: zoom-in-out 30s ease-in-out infinite;
+            background-image: url('https://images.unsplash.com/photo-1487017159836-4e23ece2e4cf?q=80&w=2071&auto=format&fit=crop');
+            background-size: cover;
+            background-position: center;
+        }
+        
+        @keyframes zoom-in-out {
+            0% {
+                transform: scale(1);
+            }
+            50% {
+                transform: scale(1.1);
+            }
+            100% {
+                transform: scale(1);
+            }
+        }
+        /* --- Backface visibility to prevent flickering on animations --- */
+        
+        * {
+            -webkit-backface-visibility: hidden;
+            backface-visibility: hidden;
+        }
+        /* --- Career Path Timeline with Vertical Scroll Animation --- */
+        
+        .timeline-item {
+            position: relative;
+            padding-bottom: 2.5rem;
+            padding-left: 2.5rem;
+            /* Initial state for scroll animation */
+            opacity: 0;
+            transform: translateY(50px);
+            transition: opacity 0.6s ease-out, transform 0.6s ease-out;
+        }
+        
+        .timeline-item.is-visible {
+            /* Visible state after scrolling into view */
+            opacity: 1;
+            transform: translateY(0);
+        }
+        
+        .timeline-item:last-child {
+            padding-bottom: 0;
+        }
+        
+        .timeline-item::before {
+            content: '';
+            position: absolute;
+            left: 0;
+            top: 0.25rem;
+            width: 1.25rem;
+            height: 1.25rem;
+            border-radius: 50%;
+            background-color: #3b82f6;
+            /* Blue-500 */
+            border: 4px solid #1f2937;
+            /* Border matches the section bg */
+            z-index: 10;
+        }
+        
+        .timeline-item::after {
+            content: '';
+            position: absolute;
+            left: 0.5rem;
+            top: 0.25rem;
+            bottom: 0;
+            width: 2px;
+            background-color: #374151;
+            /* Gray-700 */
+        }
+        
+        .timeline-item:last-child::after {
+            display: none;
+        }
+        /* --- Projects Section: Horizontal Scroll --- */
+        
+        .horizontal-scroll-container {
+            display: flex;
+            overflow-x: auto;
+            scroll-snap-type: x mandatory;
+            padding-bottom: 1.5rem;
+            /* Space for scrollbar */
+            -webkit-overflow-scrolling: touch;
+            /* Smooth scrolling on iOS */
+        }
+        /* Custom scrollbar for a cleaner look */
+        
+        .horizontal-scroll-container::-webkit-scrollbar {
+            height: 8px;
+        }
+        
+        .horizontal-scroll-container::-webkit-scrollbar-track {
+            background: #1f2937;
+            /* gray-800 */
+            border-radius: 10px;
+        }
+        
+        .horizontal-scroll-container::-webkit-scrollbar-thumb {
+            background-color: #4b5563;
+            /* gray-600 */
+            border-radius: 10px;
+            border: 2px solid #1f2937;
+            /* gray-800 */
+        }
+        
+        .horizontal-scroll-container::-webkit-scrollbar-thumb:hover {
+            background-color: #6b7280;
+            /* gray-500 */
+        }
+        
+        .project-card {
+            flex: 0 0 95%;
+            /* Each card takes up 95% of the container width on mobile */
+            scroll-snap-align: center;
+            margin-right: 1.5rem;
+        }
+        
+        .project-card:last-child {
+            margin-right: 0;
+        }
+        
+        @media (min-width: 1024px) {
+            .project-card {
+                flex: 0 0 calc(50% - 1rem);
+                /* On larger screens, show two cards at once */
+            }
+        }
+    </style>
+</head>
+
+<body class="text-gray-300">
+
+    <header class="bg-gray-900/80 backdrop-blur-md sticky top-0 z-50 shadow-lg shadow-black/20">
+        <nav class="container mx-auto px-6 py-4 flex justify-between items-center">
+            <a href="#home" class="text-2xl font-bold text-white">DR.</a>
+            <div class="hidden md:flex space-x-8">
+                <a href="#home" class="text-gray-300 hover:text-blue-400 transition duration-300">Home</a>
+                <a href="#career" class="text-gray-300 hover:text-blue-400 transition duration-300">Career Path</a>
+                <a href="#projects" class="text-gray-300 hover:text-blue-400 transition duration-300">Projects</a>
+                <a href="#contact" class="text-gray-300 hover:text-blue-400 transition duration-300">Contact</a>
+            </div>
+            <button id="mobile-menu-button" class="md:hidden text-gray-300">
+                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16m-7 6h7"></path></svg>
+            </button>
+        </nav>
+        <div id="mobile-menu" class="hidden md:hidden px-6 pb-4 border-t border-gray-700">
+            <a href="#home" class="block py-2 text-gray-300 hover:text-blue-400">Home</a>
+            <a href="#career" class="block py-2 text-gray-300 hover:text-blue-400">Career Path</a>
+            <a href="#projects" class="block py-2 text-gray-300 hover:text-blue-400">Projects</a>
+            <a href="#contact" class="block py-2 text-gray-300 hover:text-blue-400">Contact</a>
+        </div>
+    </header>
+
+    <main>
+        <section id="home" class="h-screen flex items-center justify-center relative zoom-bg">
+            <div class="absolute inset-0 bg-black/60"></div>
+            <div class="relative z-10 text-center text-white p-4">
+                <h1 class="text-5xl md:text-7xl font-bold mb-4">Dipti Rani</h1>
+                <p class="text-xl md:text-2xl font-light text-gray-200">Coding cleaner than my handwriting.</p>
+                <p class="text-lg md:text-xl font-light text-gray-400 mt-2">I am a passionate Computer Science student with a strong foundation in programming and problem-solving. I love creating innovative solutions and learning new technologies. Currently pursuing my degree in Computer Science, I am constantly
+                    exploring new areas of technology and working on exciting projects.</p>
+                <a href="https://drive.google.com/file/d/122PvIrGHoCH7fy9mVmYGJv_lI-N97BUi/view?usp=drive_link" class="inline-block mt-8 px-8 py-3 border-2 border-blue-400 text-blue-400 font-semibold rounded-full hover:bg-blue-400 hover:text-gray-900 transition-colors duration-300 transform hover:scale-105">View Resume</a>
+            </div>
+        </section>
+
+        <section id="career" class="py-20 md:py-32 bg-gray-800">
+            <div class="container mx-auto px-6">
+                <h2 class="text-4xl font-bold text-center mb-16">Career Path</h2>
+                <div class="max-w-3xl mx-auto">
+                    <div class="timeline-item">
+                        <h3 class="text-2xl font-bold text-white">Deloitte-Data Analytics Job Simulation</h3>
+                        <p class="text-blue-400 font-medium mb-2">Deloitte | May,2025</p>
+                        <p class="text-gray-400">Completed a Deloitte job simulation focused on data analysis and forensic technology, data classification and business insights, and creating a data dashboard in Tableau to visualize findings.</p>
+                    </div>
+                    <div class="timeline-item">
+                        <h3 class="text-2xl font-bold text-white">PwC Cyber Risk & Regulatory Launchpad</h3>
+                        <p class="text-blue-400 font-medium mb-2">PwC Accelerations in India | 2025</p>
+                        <p class="text-gray-400">Completed an 18-week industry readiness program focused on cybersecurity, Java development, and prompt engineering, and gaining knowledge on real-world applications and AI-driven automation.</p>
+                    </div>
+                    <div class="timeline-item">
+                        <h3 class="text-2xl font-bold text-white">Bachelor of Technology in Computer Science and Engineering</h3>
+                        <p class="text-blue-400 font-medium mb-2">C.V.Raman Global University | 2022-Ongoing</p>
+                        <p class="text-gray-400">CGPA:9.26 | Learning and Growing.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="projects" class="py-20 md:py-32 bg-gray-900">
+            <div class="container mx-auto px-6">
+                <h2 class="text-4xl font-bold text-center mb-16">My Projects</h2>
+                <div class="horizontal-scroll-container">
+                    <div class="project-card bg-gray-800 rounded-xl shadow-2xl shadow-black/30 p-8 flex flex-col">
+                        <a href="https://ibb.co/9HjWYQF6"><img src="https://i.ibb.co/RTWcHRxf/Whats-App-Image-2025-07-28-at-00-01-16-2.jpg" alt="Data Analytics Dashboard"  border="0" class="rounded-lg shadow-lg w-full h-48 object-cover mb-6"></a>
+                        <div class="flex flex-col flex-grow">
+                            <h4 class="text-2xl font-bold mb-3">My-Own-Git</h4>
+                            <p class="text-gray-400 mb-4">A Simple Git-like Version Control System (VCS) built from scratch in Java, designed to replicate the core functionality of Git.An educational tool that explains Git internals like SHA-1 hashing, content-addressable storage,
+                                and Git object models.</p>
+                            <div class="mt-auto pt-4 flex items-center justify-between">
+                                <div>
+                                    <span class="inline-block bg-blue-900 text-blue-300 text-sm font-medium mr-2 px-2.5 py-0.5 rounded">Object-Oriented Design</span>
+                                    <span class="inline-block bg-green-900 text-green-300 text-sm font-medium mr-2 px-2.5 py-0.5 rounded">Data Structures</span>
+                                    <span class="inline-block bg-yellow-900 text-yellow-300 text-sm font-medium mr-2 px-2.5 py-0.5 rounded">Version Control</span>
+                                    <span class="inline-block bg-purple-900 text-purple-300 text-sm font-medium mr-2 px-2.5 py-0.5 rounded">Java</span>
+                                    <span class="inline-block bg-red-900 text-red-300 text-sm font-medium mr-2 px-2.5 py-0.5 rounded">Git</span>
+
+                                </div>
+                                <a href="https://github.com/dipti513/My-Own-Git" target="_blank" rel="noopener noreferrer" class="text-gray-400 hover:text-blue-400 transition-colors duration-300">
+                                    <svg class="w-7 h-7" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor">
+                                        <path d="M12 2C6.477 2 2 6.477 2 12c0 4.418 2.865 8.166 6.839 9.49.5.092.682-.217.682-.482 0-.237-.009-.868-.014-1.703-2.782.605-3.369-1.343-3.369-1.343-.454-1.158-1.11-1.466-1.11-1.466-.908-.62.069-.608.069-.608 1.003.07 1.531 1.032 1.531 1.032.892 1.53 2.341 1.088 2.91.832.092-.647.35-1.088.636-1.338-2.22-.253-4.555-1.113-4.555-4.951 0-1.093.39-1.988 1.031-2.688-.103-.253-.446-1.272.098-2.65 0 0 .84-.27 2.75 1.026A9.564 9.564 0 0 1 12 6.844c.85.004 1.705.115 2.504.337 1.909-1.296 2.747-1.027 2.747-1.027.546 1.378.203 2.398.1 2.65.64.7 1.03 1.595 1.03 2.688 0 3.848-2.338 4.695-4.566 4.943.359.309.678.92.678 1.855 0 1.338-.012 2.419-.012 2.747 0 .268.18.578.688.48A10.001 10.001 0 0 0 22 12c0-5.523-4.477-10-10-10z"/>
+                                    </svg>
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="project-card bg-gray-800 rounded-xl shadow-2xl shadow-black/30 p-8 flex flex-col">
+                        <a href="https://ibb.co/Mk1DRSLb"><img src="https://i.ibb.co/CK95n8Fq/expense-Splitter.png" alt="expense-Splitter" border="0" class="rounded-lg shadow-lg w-full h-30 object-cover mb-6"></a>
+                        <div class="flex flex-col flex-grow">
+                            <h4 class="text-2xl font-bold mb-3">Expense Splitter</h4>
+                            <p class="text-gray-400 mb-4">A web-based application to split group expenses efficiently, track balances, and simplify reimbursements with a clean, user-friendly interface.</p>
+                            <div class="mt-auto pt-4 flex items-center justify-between">
+                                <div>
+                                    <span class="inline-block bg-purple-900 text-purple-300 text-sm font-medium mr-2 px-2.5 py-0.5 rounded">HTML</span>
+                                    <span class="inline-block bg-red-900 text-red-300 text-sm font-medium mr-2 px-2.5 py-0.5 rounded">CSS</span>
+                                    <span class="inline-block bg-gray-700 text-gray-300 text-sm font-medium mr-2 px-2.5 py-0.5 rounded">Javascript</span>
+                                    <span class="inline-block bg-blue-900 text-blue-300 text-sm font-medium mr-2 px-2.5 py-0.5 rounded">Spring Boot</span>
+                                    <span class="inline-block bg-yellow-900 text-yellow-300 text-sm font-medium mr-2 px-2.5 py-0.5 rounded">MYSQL</span>
+                                </div>
+                                <a href="https://github.com/dipti513/Expense_Splitter" target="_blank" rel="noopener noreferrer" class="text-gray-400 hover:text-blue-400 transition-colors duration-300">
+                                    <svg class="w-7 h-7" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor">
+                                        <path d="M12 2C6.477 2 2 6.477 2 12c0 4.418 2.865 8.166 6.839 9.49.5.092.682-.217.682-.482 0-.237-.009-.868-.014-1.703-2.782.605-3.369-1.343-3.369-1.343-.454-1.158-1.11-1.466-1.11-1.466-.908-.62.069-.608.069-.608 1.003.07 1.531 1.032 1.531 1.032.892 1.53 2.341 1.088 2.91.832.092-.647.35-1.088.636-1.338-2.22-.253-4.555-1.113-4.555-4.951 0-1.093.39-1.988 1.031-2.688-.103-.253-.446-1.272.098-2.65 0 0 .84-.27 2.75 1.026A9.564 9.564 0 0 1 12 6.844c.85.004 1.705.115 2.504.337 1.909-1.296 2.747-1.027 2.747-1.027.546 1.378.203 2.398.1 2.65.64.7 1.03 1.595 1.03 2.688 0 3.848-2.338 4.695-4.566 4.943.359.309.678.92.678 1.855 0 1.338-.012 2.419-.012 2.747 0 .268.18.578.688.48A10.001 10.001 0 0 0 22 12c0-5.523-4.477-10-10-10z"/>
+                                    </svg>
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="project-card bg-gray-800 rounded-xl shadow-2xl shadow-black/30 p-8 flex flex-col">
+                        <a href="https://ibb.co/8DQNDrd9"><img src="https://i.ibb.co/1f47frdT/Whats-App-Image-2025-07-28-at-00-01-16.jpg" alt="Task Management App"  border="0" class="rounded-lg shadow-lg w-full h-48 object-cover mb-6"></a>
+                        <div class="flex flex-col flex-grow">
+                            <h4 class="text-2xl font-bold mb-3">A Multi Model Approach for Lung Cancer Classification Using TOPSIS based Feature Selection</h4>
+                            <p class="text-gray-400 mb-4">Improved lung cancer diagnosis by reducing data noise through feature selection and improved accuracy by using ML models.</p>
+                            <div class="mt-auto pt-4 flex items-center justify-between">
+                                <div>
+                                    <span class="inline-block bg-indigo-900 text-indigo-300 text-sm font-medium mr-2 px-2.5 py-0.5 rounded">Machine Learning</span>
+                                    <span class="inline-block bg-orange-900 text-orange-300 text-sm font-medium mr-2 px-2.5 py-0.5 rounded">Data Analytics and Handling</span>
+                                    <span class="inline-block bg-pink-900 text-purple-300 text-sm font-medium mr-2 px-2.5 py-0.5 rounded">Research and Presentation</span>
+                                </div>
+
+                            </div>
+                        </div>
+                    </div>
+                    <div class="project-card bg-gray-800 rounded-xl shadow-2xl shadow-black/30 p-8 flex flex-col">
+                        <a href="https://ibb.co/GQKK0KkB"><img src="https://i.ibb.co/Dfxxtxks/Whats-App-Image-2025-07-28-at-00-01-16-1.jpg" alt="E-commerce Platform"  border="0" class="rounded-lg shadow-lg w-full h-30 object-cover mb-6"></a>
+                        <div class="flex flex-col flex-grow">
+                            <h4 class="text-2xl font-bold mb-3">Library Management System</h4>
+                            <p class="text-gray-400 mb-4">A console-based Library Management System written in C, featuring book inventory management, issuance tracking, and password-protected access.</p>
+                            <div class="mt-auto pt-4 flex items-center justify-between">
+                                <div>
+                                    <span class="inline-block bg-gray-900 text-gray-300 text-sm font-medium mr-2 px-2.5 py-0.5 rounded">C Programming Concepts</span>
+                                    <span class="inline-block bg-blue-900 text-blue-300 text-sm font-medium mr-2 px-2.5 py-0.5 rounded">Console Interface Programming</span>
+                                </div>
+                                <a href="https://github.com/dipti513/library_management_system" target="_blank" rel="noopener noreferrer" class="text-gray-400 hover:text-blue-400 transition-colors duration-300">
+                                    <svg class="w-7 h-7" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor">
+                                        <path d="M12 2C6.477 2 2 6.477 2 12c0 4.418 2.865 8.166 6.839 9.49.5.092.682-.217.682-.482 0-.237-.009-.868-.014-1.703-2.782.605-3.369-1.343-3.369-1.343-.454-1.158-1.11-1.466-1.11-1.466-.908-.62.069-.608.069-.608 1.003.07 1.531 1.032 1.531 1.032.892 1.53 2.341 1.088 2.91.832.092-.647.35-1.088.636-1.338-2.22-.253-4.555-1.113-4.555-4.951 0-1.093.39-1.988 1.031-2.688-.103-.253-.446-1.272.098-2.65 0 0 .84-.27 2.75 1.026A9.564 9.564 0 0 1 12 6.844c.85.004 1.705.115 2.504.337 1.909-1.296 2.747-1.027 2.747-1.027.546 1.378.203 2.398.1 2.65.64.7 1.03 1.595 1.03 2.688 0 3.848-2.338 4.695-4.566 4.943.359.309.678.92.678 1.855 0 1.338-.012 2.419-.012 2.747 0 .268.18.578.688.48A10.001 10.001 0 0 0 22 12c0-5.523-4.477-10-10-10z"/>
+                                    </svg>
+                                </a>
+                            </div>
+                        </div>
+
+                    </div>
+                    <div class="project-card bg-gray-800 rounded-xl shadow-2xl shadow-black/30 p-8 flex flex-col">
+                        <a href="https://ibb.co/SwCTkLQw"><img src="https://i.ibb.co/HT8vcJNT/portfolio.png" alt="portfolio"  border="0" class="rounded-lg shadow-lg w-full h-48 object-cover mb-6"></a>
+                        <div class="flex flex-col flex-grow">
+                            <h4 class="text-2xl font-bold mb-3">My-Portfolio</h4>
+                            <p class="text-gray-400 mb-4">A responsive personal portfolio website built using HTML, CSS, and JavaScript. The site includes interactive elements, smooth animations, and a clean UI/UX to highlight my work and development experience.</p>
+                            <div class="mt-auto pt-4 flex items-center justify-between">
+                                <div>
+                                    <span class="inline-block bg-gray-900 text-gray-300 text-sm font-medium mr-2 px-2.5 py-0.5 rounded">HTML</span>
+                                    <span class="inline-block bg-blue-900 text-blue-300 text-sm font-medium mr-2 px-2.5 py-0.5 rounded">CSS</span>
+                                    <span class="inline-block bg-purple-700 text-purple-300 text-sm font-medium mr-2 px-2.5 py-0.5 rounded">JavaScript</span>
+                                </div>
+                                <a href="https://github.com/dipti513" target="_blank" rel="noopener noreferrer" class="text-gray-400 hover:text-blue-400 transition-colors duration-300">
+                                    <svg class="w-7 h-7" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor">
+                                        <path d="M12 2C6.477 2 2 6.477 2 12c0 4.418 2.865 8.166 6.839 9.49.5.092.682-.217.682-.482 0-.237-.009-.868-.014-1.703-2.782.605-3.369-1.343-3.369-1.343-.454-1.158-1.11-1.466-1.11-1.466-.908-.62.069-.608.069-.608 1.003.07 1.531 1.032 1.531 1.032.892 1.53 2.341 1.088 2.91.832.092-.647.35-1.088.636-1.338-2.22-.253-4.555-1.113-4.555-4.951 0-1.093.39-1.988 1.031-2.688-.103-.253-.446-1.272.098-2.65 0 0 .84-.27 2.75 1.026A9.564 9.564 0 0 1 12 6.844c.85.004 1.705.115 2.504.337 1.909-1.296 2.747-1.027 2.747-1.027.546 1.378.203 2.398.1 2.65.64.7 1.03 1.595 1.03 2.688 0 3.848-2.338 4.695-4.566 4.943.359.309.678.92.678 1.855 0 1.338-.012 2.419-.012 2.747 0 .268.18.578.688.48A10.001 10.001 0 0 0 22 12c0-5.523-4.477-10-10-10z"/>
+                                    </svg>
+                                </a>
+                            </div>
+                        </div>
+
+                    </div>
+        </section>
+
+        <section id="contact" class="py-20 md:py-32 bg-gray-800">
+            <div class="container mx-auto px-6 grid md:grid-cols-2 gap-12 items-center">
+                <div class="w-48 h-48 md:w-64 md:h-64 mx-auto md:justify-self-center">
+                    <a href="https://ibb.co/g0rDgj9"><img src="https://i.ibb.co/3xT0hrd/Whats-App-Image-2025-07-28-at-00-00-44.jpg" alt="Dipti Rani"  border="0" class="rounded-full w-full h-full object-cover shadow-lg ring-4 ring-gray-700"></a>
+                </div>
+
+                <div class="text-center md:text-left">
+                    <h2 class="text-4xl font-bold mb-4">Get In Touch</h2>
+                    <p class="text-gray-400 mb-8 max-w-md mx-auto md:mx-0">I'm currently open to new opportunities, collaborations, or freelance projects. Whether you have a question, an idea, or just want to connect — feel free to reach out. Let’s build something great together!</p>
+                    <div class="flex justify-center md:justify-start space-x-6">
+                        <a href="mailto:ranideepti001@gmail.com" class="text-gray-400 hover:text-blue-400 transition-colors duration-300">
+                            <svg class="w-8 h-8" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" d="M21.75 6.75v10.5a2.25 2.25 0 0 1-2.25 2.25h-15a2.25 2.25 0 0 1-2.25-2.25V6.75m19.5 0A2.25 2.25 0 0 0 19.5 4.5h-15a2.25 2.25 0 0 0-2.25 2.25m19.5 0v.243a2.25 2.25 0 0 1-1.07 1.916l-7.5 4.615a2.25 2.25 0 0 1-2.36 0L3.32 8.91a2.25 2.25 0 0 1-1.07-1.916V6.75" />
+                            </svg>
+                        </a>
+                        <a href="https://www.linkedin.com/in/dipti-rani-04b636302/" class="text-gray-400 hover:text-blue-400 transition-colors duration-300">
+                            <svg class="w-8 h-8" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor">
+                                <path d="M20.5 2h-17A1.5 1.5 0 0 0 2 3.5v17A1.5 1.5 0 0 0 3.5 22h17a1.5 1.5 0 0 0 1.5-1.5v-17A1.5 1.5 0 0 0 20.5 2ZM8 18.5h-3v-9h3v9Zm-1.5-10.25a1.75 1.75 0 1 1 0-3.5 1.75 1.75 0 0 1 0 3.5ZM18.5 18.5h-3v-4.25c0-1.28-.5-2.12-1.75-2.12-.97 0-1.5.66-1.75 1.28V18.5h-3v-9h3v1.5c.5-.88 1.38-1.5 3-1.5 2.25 0 4 1.47 4 4.62v4.38Z" />
+                            </svg>
+                        </a>
+                        <a href="https://github.com/dipti513" class="text-gray-400 hover:text-blue-400 transition-colors duration-300">
+                            <svg class="w-8 h-8" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor">
+                                 <path d="M12 2C6.477 2 2 6.477 2 12c0 4.418 2.865 8.166 6.839 9.49.5.092.682-.217.682-.482 0-.237-.009-.868-.014-1.703-2.782.605-3.369-1.343-3.369-1.343-.454-1.158-1.11-1.466-1.11-1.466-.908-.62.069-.608.069-.608 1.003.07 1.531 1.032 1.531 1.032.892 1.53 2.341 1.088 2.91.832.092-.647.35-1.088.636-1.338-2.22-.253-4.555-1.113-4.555-4.951 0-1.093.39-1.988 1.031-2.688-.103-.253-.446-1.272.098-2.65 0 0 .84-.27 2.75 1.026A9.564 9.564 0 0 1 12 6.844c.85.004 1.705.115 2.504.337 1.909-1.296 2.747-1.027 2.747-1.027.546 1.378.203 2.398.1 2.65.64.7 1.03 1.595 1.03 2.688 0 3.848-2.338 4.695-4.566 4.943.359.309.678.92.678 1.855 0 1.338-.012 2.419-.012 2.747 0 .268.18.578.688.48A10.001 10.001 0 0 0 22 12c0-5.523-4.477-10-10-10z"/>
+                            </svg>
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <footer class="bg-gray-900 text-gray-400 py-8">
+        <div class="container mx-auto px-6 text-center">
+            <p>&copy; 2025 Dipti Rani. All Rights Reserved.</p>
+        </div>
+    </footer>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // --- Mobile Menu Toggle ---
+            const mobileMenuButton = document.getElementById('mobile-menu-button');
+            const mobileMenu = document.getElementById('mobile-menu');
+            mobileMenuButton.addEventListener('click', () => {
+                mobileMenu.classList.toggle('hidden');
+            });
+
+            // --- Smooth Scrolling for Navigation Links ---
+            document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+                anchor.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    if (!mobileMenu.classList.contains('hidden')) {
+                        mobileMenu.classList.add('hidden');
+                    }
+                    document.querySelector(this.getAttribute('href')).scrollIntoView({
+                        behavior: 'smooth'
+                    });
+                });
+            });
+
+            // --- Career Path Scroll Animation ---
+            const timelineItems = document.querySelectorAll('.timeline-item');
+            const observerOptions = {
+                root: null, // relative to the viewport
+                rootMargin: '0px',
+                threshold: 0.2 // trigger when 20% of the item is visible
+            };
+
+            const observer = new IntersectionObserver((entries, observer) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        // Add a delay to each item for a staggered effect
+                        const delay = entry.target.dataset.delay || 0;
+                        setTimeout(() => {
+                            entry.target.classList.add('is-visible');
+                        }, delay);
+                        observer.unobserve(entry.target); // Animate only once
+                    }
+                });
+            }, observerOptions);
+
+            timelineItems.forEach((item, index) => {
+                item.dataset.delay = index * 150; // Stagger animation by 150ms
+                observer.observe(item);
+            });
+        });
+    </script>
+
+</body>
+
+</html>
